@@ -5,10 +5,12 @@ local gfx = playdate.graphics
 -- iterations per second
 playdate.display.setRefreshRate(2)
 
+local activeSynths = {}
 s = snd.sequence.new('giveyouup.mid')
 
 function newsynth()
 	local s = snd.synth.new(snd.kWaveSawtooth)
+	table.insert(activeSynths, s) -- add it as last element
 	s:setVolume(0.2)
 	s:setAttack(0)
 	s:setDecay(0.15)
@@ -34,15 +36,21 @@ function playdate.update()
 	
 	for i=1,ntracks do
 		local track = s:getTrackAtIndex(i)
-		local newInst, newSynth = newinst(1)
+		local newInst, newSynth = newinst()
 		print("newSynth", newSynth)
 		track:setInstrument(newInst)
 		s:play()
 	end
 
-	local iterationText = currentTime() .. " iteration " .. iterations
+	local iterationText = currentTime() .. " iteration " .. iterations .. " synths: " .. #activeSynths
 	gfx.drawText(iterationText,100, 100)
 	print(iterationText)
 	playdate.drawFPS()
 	iterations = iterations + 1
+
+	if #activeSynths > ntracks*2 then
+		for _ = 1, ntracks do
+			table.remove(activeSynths, 1) -- delete oldest synth
+		end
+	end
 end
