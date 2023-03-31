@@ -10,7 +10,6 @@ s = snd.sequence.new('giveyouup.mid')
 
 function newsynth()
 	local s = snd.synth.new(snd.kWaveSawtooth)
-	table.insert(activeSynths, s) -- add it as last element
 	s:setVolume(0.2)
 	s:setAttack(0)
 	s:setDecay(0.15)
@@ -38,6 +37,7 @@ function playdate.update()
 		local track = s:getTrackAtIndex(i)
 		local newInst, newSynth = newinst()
 		print("newSynth", newSynth)
+		table.insert(activeSynths, newSynth) -- add it as last element
 		track:setInstrument(newInst)
 		s:play()
 	end
