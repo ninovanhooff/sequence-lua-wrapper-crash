@@ -1,0 +1,7 @@
+name=midi_test
+author=Nino van Hooff
+description=Sample project for bug report
+bundleID=com.ninovanhooff.midi-wrapper-crash
+version=1.0
+buildNumber=1
+imagePath=SystemAssets
