@@ -6,7 +6,6 @@ local gfx = playdate.graphics
 playdate.display.setRefreshRate(2)
 
 local activeSynths = {}
-s = snd.sequence.new('giveyouup.mid')
 
 function newsynth()
 	local s = snd.synth.new(snd.kWaveSawtooth)
@@ -25,11 +24,13 @@ function newinst()
 	return inst, synth
 end
 
-local ntracks = s:getTrackCount()
 
 local iterations = 0
 
 function playdate.update()
+	s = snd.sequence.new('giveyouup.mid')
+	local ntracks = s:getTrackCount()
+
 	gfx.clear(gfx.kColorWhite)
 	gfx.setColor(gfx.kColorBlack)
 	
@@ -53,4 +54,13 @@ function playdate.update()
 			table.remove(activeSynths, 1) -- delete oldest synth
 		end
 	end
+
+	-- cleanup sequence
+	s:stop()
+	for i=1, ntracks do
+		s:getTrackAtIndex(i):clearNotes()
+	end
+	s = nil
+	print("garbage collect", collectgarbage("collect"))
+	print("garbage count", collectgarbage("count"))
 end
