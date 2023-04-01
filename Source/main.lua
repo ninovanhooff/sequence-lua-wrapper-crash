@@ -29,35 +29,17 @@ local iterations = 0
 
 function playdate.update()
 	s = snd.sequence.new('giveyouup.mid')
-	local ntracks = s:getTrackCount()
 
 	gfx.clear(gfx.kColorWhite)
 	gfx.setColor(gfx.kColorBlack)
-	
-	for i=1,ntracks do
-		local track = s:getTrackAtIndex(i)
-		local newInst, newSynth = newinst()
-		print("newSynth", newSynth)
-		table.insert(activeSynths, newSynth) -- add it as last element
-		track:setInstrument(newInst)
-		s:play()
-	end
-
 	local iterationText = currentTime() .. " iteration " .. iterations .. " synths: " .. #activeSynths
 	gfx.drawText(iterationText,100, 100)
 	print(iterationText)
 	playdate.drawFPS()
 	iterations = iterations + 1
 
-	if #activeSynths > ntracks*2 then
-		for _ = 1, ntracks do
-			table.remove(activeSynths, 1) -- delete oldest synth
-		end
-	end
-
 	-- cleanup sequence
-	s:stop()
-	for i=1, ntracks do
+	for i=1, s:getTrackCount() do
 		s:getTrackAtIndex(i):clearNotes()
 	end
 	s = nil
